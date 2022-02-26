@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 
-class ExtendViewSet:
+class MapViewSetMixin:
     permission_map = {}
     throttle_scope_map = {}
     throttle_class_map = {}
@@ -38,16 +38,16 @@ class ExtendViewSet:
         return super().get_permissions()
 
 
-class ExtendedViewSet(ExtendViewSet, GenericViewSet):
+class ExtendedViewSet(MapViewSetMixin, GenericViewSet):
     pass
 
 
-class ExtendedModelViewSet(ExtendViewSet, viewsets.ModelViewSet):
+class ExtendedModelViewSet(MapViewSetMixin, viewsets.ModelViewSet):
     pass
 
 
 class RUDExtendedModelViewSet(
-    ExtendViewSet,
+    MapViewSetMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -58,7 +58,7 @@ class RUDExtendedModelViewSet(
 
 
 class CRDExtendedModelViewSet(
-    ExtendViewSet,
+    MapViewSetMixin,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -69,7 +69,7 @@ class CRDExtendedModelViewSet(
 
 
 class CRUExtendedModelViewSet(
-    ExtendViewSet,
+    MapViewSetMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
