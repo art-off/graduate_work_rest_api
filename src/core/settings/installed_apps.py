@@ -2,6 +2,8 @@ from django.conf import settings
 
 
 INSTALLED_APPS = [
+    'jazzmin',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -15,6 +17,7 @@ INSTALLED_APPS = [
     'django_filters',
 
     'apps.user',
+    'apps.food_projects',
 ]
 
 if settings.DEBUG:
