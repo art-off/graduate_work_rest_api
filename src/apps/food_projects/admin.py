@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.db.models import Q
 from .models import FoodProject, MenuItem
 
 
@@ -19,15 +18,6 @@ class AdminFoodProject(admin.ModelAdmin):
         return queryset.filter(owner=request.user)
 
 
-def _get_only_current_user_menu_items(request, queryset):
-    user_projects = FoodProject.objects.filter(owner=request.user)
-
-    any_user_project_filter_condition = Q()
-    for user_project in user_projects:
-        any_user_project_filter_condition = any_user_project_filter_condition | Q(project=user_project)
-    return queryset.filter(any_user_project_filter_condition)
-
-
 @admin.register(MenuItem)
 class AdminMenuItem(admin.ModelAdmin):
     list_display = ('name', 'description')
@@ -37,22 +27,15 @@ class AdminMenuItem(admin.ModelAdmin):
 
         if request.user.is_superuser:
             return queryset
-
-        return _get_only_current_user_menu_items(request, queryset)
-
-        # user_projects = FoodProject.objects.filter(owner=request.user)
-        #
-        # any_user_project_filter_condition = Q()
-        # for user_project in user_projects:
-        #     any_user_project_filter_condition = any_user_project_filter_condition | Q(project=user_project)
-        # return queryset.filter(any_user_project_filter_condition)
+        return queryset.filter(project__owner=request.user)
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         project_selector = context['adminform'].form.fields['project']
 
+        user_projects_queryset = request.user.foodproject_set
         # select first project as default
-        project_selector.initial = 1
+        project_selector.initial = user_projects_queryset.first()
         # filter project by current user
-        project_selector.queryset = FoodProject.objects.filter(owner=request.user)
+        project_selector.queryset = user_projects_queryset
 
         return super().render_change_form(request, context, add=add, change=change, form_url=form_url, obj=obj)
