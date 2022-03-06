@@ -6,6 +6,8 @@ from apps.user.models import User
 class FoodProject(UUIDModel):
     name = models.CharField(max_length=120)
     description = models.TextField()
+    logo_image = models.ImageField()
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, editable=False)
 
     def __str__(self):
@@ -15,4 +17,24 @@ class FoodProject(UUIDModel):
 class MenuItem(UUIDModel):
     name = models.CharField(max_length=120)
     description = models.TextField()
+    price = models.FloatField()
+    image = models.ImageField()
+
     project = models.ForeignKey(FoodProject, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name} - {self.price}₽'
+
+
+class PromotionItem(UUIDModel):
+    name = models.CharField(max_length=120)
+    description = models.TextField()
+    price = models.FloatField()
+    image = models.ImageField()
+
+    menu_items = models.ManyToManyField(MenuItem)
+
+    project = models.ForeignKey(FoodProject, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name} - {self.price}'
