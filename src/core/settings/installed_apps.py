@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
     'django_filters',
+    'colorfield',
 
     'apps.user',
     'apps.food_projects',

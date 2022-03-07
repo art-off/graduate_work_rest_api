@@ -1,6 +1,7 @@
 from django.db import models
 from helpers.models import UUIDModel
 from apps.user.models import User
+from colorfield.fields import ColorField
 
 
 class FoodProject(UUIDModel):
@@ -8,6 +9,7 @@ class FoodProject(UUIDModel):
     description = models.TextField()
     logo_image = models.ImageField()
     address = models.CharField(max_length=240)
+    primary_app_color = ColorField(default='#FF0000')
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, editable=False)
 

@@ -17,6 +17,7 @@ django-filter = "*"
 django-heroku = "*"
 django-jazzmin = "*"
 pillow = "*"
+django-colorfield = "*"
 
 [dev-packages]
 pytest-django = "*"
