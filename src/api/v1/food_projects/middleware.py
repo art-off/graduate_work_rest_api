@@ -1,11 +1,8 @@
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.contrib.auth.middleware import AuthenticationMiddleware
-from django.utils.functional import SimpleLazyObject
+from rest_framework.status import HTTP_404_NOT_FOUND
 
 from apps.food_projects.models import FoodProject
-from apps.user.models import User
-from rest_framework.status import HTTP_404_NOT_FOUND
 
 
 def project_middleware(get_response):
@@ -15,7 +12,6 @@ def project_middleware(get_response):
             return get_response(request)
 
         project_id = request.headers.get('Project-Id')
-
         if project_id is None:
             return JsonResponse({'detail': 'project_id does not exist'}, status=HTTP_404_NOT_FOUND)
 
@@ -35,4 +31,4 @@ def project_middleware(get_response):
 
 # HELPERS
 def _is_api_request(request):
-    return request.path.startswith('/api')
+    return request.path.startswith('/api') and ('/docs/' not in request.path)
