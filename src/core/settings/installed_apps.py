@@ -19,6 +19,7 @@ INSTALLED_APPS = [
 
     'apps.user',
     'apps.food_projects',
+    'apps.card',
 ]
 
 if settings.DEBUG:

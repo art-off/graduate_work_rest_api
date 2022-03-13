@@ -32,7 +32,7 @@ class UserAdmin(BaseUserAdmin):
         return super().get_fieldsets(request, obj)
 
     def render_change_form(self, request, context, *args, obj=None, **kwargs):
-        admin_form_helpers.prepare_project_field(context, request)
+        admin_form_helpers.prepare_project_field(context, request, obj)
         return super().render_change_form(request, context, *args, obj=obj, **kwargs)
 
     def get_queryset(self, request):

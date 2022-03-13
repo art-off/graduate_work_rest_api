@@ -1,18 +1,8 @@
 from django.contrib import admin
 
+from helpers.mixins import QuerySetByCurrentUserProjectsMixin
 from utils.admin_form_helpers import prepare_project_field, prepare_menu_items_field
 from .models import FoodProject, MenuItem, PromotionItem
-
-
-class QuerySetByCurrentUserProjectsMixin:
-    """
-    Use with `admin.ModelAdmin` classes where you want filter queryset by current user projects
-    """
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        if request.user.is_superuser:
-            return queryset
-        return queryset.filter(project__owner=request.user)
 
 
 @admin.register(FoodProject)
@@ -35,9 +25,9 @@ class AdminFoodProject(admin.ModelAdmin):
 class AdminMenuItem(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
     list_display = ('name', 'description', 'price')
 
-    def render_change_form(self, request, context, *args, **kwargs):
-        prepare_project_field(context, request)
-        return super().render_change_form(request, context, *args, **kwargs)
+    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+        prepare_project_field(context, request, obj)
+        return super().render_change_form(request, context, add, change, form_url, obj)
 
 
 @admin.register(PromotionItem)
@@ -51,6 +41,6 @@ class AdminPromotionItem(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
         return ", ".join([i.name for i in obj.menu_items.all()])
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
-        prepare_project_field(context, request)
+        prepare_project_field(context, request, obj)
         prepare_menu_items_field(context, request)
         return super().render_change_form(request, context, add, change, form_url, obj)
