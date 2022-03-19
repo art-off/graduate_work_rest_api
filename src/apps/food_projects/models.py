@@ -30,10 +30,15 @@ class MenuItem(UUIDModel):
 
 
 class PromotionItem(UUIDModel):
+    class TextColor(models.TextChoices):
+        WHITE = 'WHITE'
+        BLACK = 'BLACK'
+
     name = models.CharField(max_length=120)
     description = models.TextField()
     price = models.FloatField()
     image = models.ImageField()
+    over_image_text_color = models.CharField(max_length=20, choices=TextColor.choices)
 
     menu_items = models.ManyToManyField(MenuItem)
 
