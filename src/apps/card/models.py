@@ -11,11 +11,25 @@ class Order(UUIDModel):
         EXECUTION = 'EXECUTION', _('Execution')
         DONE = 'DONE', _('Done')
 
-    menu_items = models.ManyToManyField(MenuItem, blank=True)
-    promotions = models.ManyToManyField(PromotionItem, blank=True)
-
     preferred_delivery_time = models.TimeField()
     customer_phone = models.CharField(max_length=30)
     status = models.CharField(max_length=120, choices=Status.choices, default=Status.WAITING)
 
     project = models.ForeignKey(FoodProject, on_delete=models.CASCADE)
+
+
+class OrderMenuItem(UUIDModel):
+    menu_item = models.ForeignKey(MenuItem, null=True, on_delete=models.SET_NULL)
+    count = models.IntegerField()
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.menu_item} ({self.count})'
+
+
+class OrderPromotions(UUIDModel):
+    promotion = models.ForeignKey(PromotionItem, null=True, on_delete=models.SET_NULL)
+    count = models.IntegerField()
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)

@@ -2,16 +2,38 @@ from django.contrib import admin
 
 from utils.admin_form_helpers import prepare_project_field
 from helpers.mixins import QuerySetByCurrentUserProjectsMixin
-from .models import Order
+from .models import Order, OrderMenuItem, OrderPromotions
+
+from apps.food_projects.models import PromotionItem, MenuItem
+
+
+class FilteredFormFiledMixin:
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_foreignkey(db_field, request, **kwargs)
+        if request.user.is_superuser:
+            return formfield
+        if formfield.queryset.model in (PromotionItem, MenuItem):
+            formfield.queryset = formfield.queryset.filter(project__owner=request.user)
+        return formfield
+
+
+class MenuItemInline(FilteredFormFiledMixin, admin.TabularInline):
+    model = OrderMenuItem
+    fk_name = 'order'
+    extra = 0
+
+
+class PromotionInline(FilteredFormFiledMixin, admin.TabularInline):
+    model = OrderPromotions
+    fk_name = 'order'
+    extra = 0
 
 
 @admin.register(Order)
 class AdminOrder(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
-    list_display = ('customer_phone', 'preferred_delivery_time',
-                    'selected_menu_items', 'selected_promotions',
-                    'status',)
+    list_display = ('customer_phone', 'preferred_delivery_time', 'status',)
 
-    filter_horizontal = ('menu_items', 'promotions',)
+    inlines = (MenuItemInline, PromotionInline,)
 
     @staticmethod
     def selected_menu_items(obj):
