@@ -22,7 +22,7 @@ class OrderMenuItem(UUIDModel):
     menu_item = models.ForeignKey(MenuItem, null=True, on_delete=models.SET_NULL)
     count = models.IntegerField()
 
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name='ordered_menu_items', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.menu_item} ({self.count})'
@@ -32,4 +32,4 @@ class OrderPromotions(UUIDModel):
     promotion = models.ForeignKey(PromotionItem, null=True, on_delete=models.SET_NULL)
     count = models.IntegerField()
 
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name='ordered_promotions', on_delete=models.CASCADE)
