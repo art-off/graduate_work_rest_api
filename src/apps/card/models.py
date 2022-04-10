@@ -15,6 +15,8 @@ class Order(UUIDModel):
     customer_phone = models.CharField(max_length=30)
     status = models.CharField(max_length=120, choices=Status.choices, default=Status.WAITING)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     project = models.ForeignKey(FoodProject, on_delete=models.CASCADE)
 
 

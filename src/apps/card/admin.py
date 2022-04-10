@@ -31,7 +31,8 @@ class PromotionInline(FilteredFormFiledMixin, admin.TabularInline):
 
 @admin.register(Order)
 class AdminOrder(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
-    list_display = ('customer_phone', 'preferred_delivery_time', 'status',)
+    list_display = ('customer_phone', 'preferred_delivery_time', 'status', 'created_at',)
+    ordering = ('-created_at',)
 
     inlines = (MenuItemInline, PromotionInline,)
 
