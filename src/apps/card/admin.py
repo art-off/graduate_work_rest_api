@@ -17,16 +17,18 @@ class FilteredFormFiledMixin:
         return formfield
 
 
-class MenuItemInline(FilteredFormFiledMixin, admin.TabularInline):
+class MenuItemInline(FilteredFormFiledMixin, admin.StackedInline):
     model = OrderMenuItem
     fk_name = 'order'
     extra = 0
+    filter_horizontal = ('selected_options',)
 
 
-class PromotionInline(FilteredFormFiledMixin, admin.TabularInline):
+class PromotionInline(FilteredFormFiledMixin, admin.StackedInline):
     model = OrderPromotions
     fk_name = 'order'
     extra = 0
+    filter_horizontal = ('selected_options',)
 
 
 @admin.register(Order)

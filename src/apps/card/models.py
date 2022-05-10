@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 from helpers.models import UUIDModel
 
-from apps.food_projects.models import MenuItem, PromotionItem, FoodProject
+from apps.food_projects.models import MenuItem, PromotionItem, FoodProject, MenuOption
 
 
 class Order(UUIDModel):
@@ -22,6 +22,7 @@ class Order(UUIDModel):
 
 class OrderMenuItem(UUIDModel):
     menu_item = models.ForeignKey(MenuItem, null=True, on_delete=models.SET_NULL)
+    selected_options = models.ManyToManyField(MenuOption, blank=True)
     count = models.IntegerField()
 
     order = models.ForeignKey(Order, related_name='ordered_menu_items', on_delete=models.CASCADE)
@@ -32,6 +33,10 @@ class OrderMenuItem(UUIDModel):
 
 class OrderPromotions(UUIDModel):
     promotion = models.ForeignKey(PromotionItem, null=True, on_delete=models.SET_NULL)
+    selected_options = models.ManyToManyField(MenuOption, blank=True)
     count = models.IntegerField()
 
     order = models.ForeignKey(Order, related_name='ordered_promotions', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.promotion} ({self.count})'

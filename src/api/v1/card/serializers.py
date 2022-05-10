@@ -23,13 +23,13 @@ class OrderPromotionsSerializer(serializers.ModelSerializer):
 class CreateOrderMenuItemsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderMenuItem
-        fields = ('menu_item', 'count',)
+        fields = ('menu_item', 'selected_options', 'count',)
 
 
 class CreateOrderPromotionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderPromotions
-        fields = ('promotion', 'count',)
+        fields = ('promotion', 'selected_options', 'count',)
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -56,8 +56,15 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         order = Order.objects.create(**validated_data)
 
         for ordered_menu_item_data in ordered_menu_items_data:
-            OrderMenuItem.objects.create(order=order, **ordered_menu_item_data)
+            selected_options = ordered_menu_item_data.pop('selected_options')
+            order_menu_item = OrderMenuItem(order=order, **ordered_menu_item_data)
+            order_menu_item.save()
+            for i in selected_options:
+                order_menu_item.selected_options.add(str(i.id))
         for ordered_promotion_data in ordered_promotions_data:
-            OrderPromotions.objects.create(order=order, **ordered_promotion_data)
-
+            selected_options = ordered_promotion_data.pop('selected_options')
+            order_promotion = OrderPromotions(order=order, **ordered_promotion_data)
+            order_promotion.save()
+            for i in selected_options:
+                order_promotion.selected_options.add(str(i.id))
         return order
