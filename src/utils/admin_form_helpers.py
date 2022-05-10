@@ -1,4 +1,12 @@
-from apps.food_projects.models import MenuItem
+from apps.food_projects.models import MenuItem, MenuOption
+
+
+def prepare_menu_options_field(context, request):
+    """
+    Filter menu options for current user
+    """
+    menu_options_selector = context['adminform'].form.fields['allowed_options']
+    menu_options_selector.queryset = MenuOption.objects.filter(project__owner=request.user)
 
 
 def prepare_menu_items_field(context, request):

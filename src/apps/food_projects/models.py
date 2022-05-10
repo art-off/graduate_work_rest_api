@@ -17,11 +17,23 @@ class FoodProject(UUIDModel):
         return self.name
 
 
+class MenuOption(UUIDModel):
+    name = models.CharField(max_length=60)
+    price = models.FloatField()
+
+    project = models.ForeignKey(FoodProject, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name} - {self.price}'
+
+
 class MenuItem(UUIDModel):
     name = models.CharField(max_length=120)
     description = models.TextField()
     price = models.FloatField()
     image = models.ImageField()
+
+    allowed_options = models.ManyToManyField(MenuOption, blank=True)
 
     project = models.ForeignKey(FoodProject, on_delete=models.CASCADE)
 
@@ -41,6 +53,7 @@ class PromotionItem(UUIDModel):
     over_image_text_color = models.CharField(max_length=20, choices=TextColor.choices)
 
     menu_items = models.ManyToManyField(MenuItem)
+    allowed_options = models.ManyToManyField(MenuOption, blank=True)
 
     project = models.ForeignKey(FoodProject, on_delete=models.CASCADE)
 

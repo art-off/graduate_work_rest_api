@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from helpers.mixins import QuerySetByCurrentUserProjectsMixin
-from utils.admin_form_helpers import prepare_project_field, prepare_menu_items_field
-from .models import FoodProject, MenuItem, PromotionItem
+from utils.admin_form_helpers import prepare_project_field, prepare_menu_items_field, prepare_menu_options_field
+from .models import FoodProject, MenuItem, PromotionItem, MenuOption
 
 
 @admin.register(FoodProject)
@@ -21,12 +21,24 @@ class AdminFoodProject(admin.ModelAdmin):
         return queryset.filter(owner=request.user)
 
 
-@admin.register(MenuItem)
-class AdminMenuItem(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
-    list_display = ('name', 'description', 'price')
+@admin.register(MenuOption)
+class AdminMenuOption(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
+    list_display = ('name', 'price',)
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         prepare_project_field(context, request, obj)
+        return super().render_change_form(request, context, add, change, form_url, obj)
+
+
+@admin.register(MenuItem)
+class AdminMenuItem(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
+    list_display = ('name', 'description', 'price',)
+
+    filter_horizontal = ('allowed_options',)
+
+    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+        prepare_project_field(context, request, obj)
+        prepare_menu_options_field(context, request)
         return super().render_change_form(request, context, add, change, form_url, obj)
 
 
@@ -34,7 +46,7 @@ class AdminMenuItem(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
 class AdminPromotionItem(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
     list_display = ('name', 'selected_menu_items', 'price',)
 
-    filter_horizontal = ('menu_items',)
+    filter_horizontal = ('menu_items', 'allowed_options',)
 
     @staticmethod
     def selected_menu_items(obj):
@@ -43,4 +55,5 @@ class AdminPromotionItem(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         prepare_project_field(context, request, obj)
         prepare_menu_items_field(context, request)
+        prepare_menu_options_field(context, request)
         return super().render_change_form(request, context, add, change, form_url, obj)
