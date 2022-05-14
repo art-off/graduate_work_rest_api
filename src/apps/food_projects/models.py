@@ -9,6 +9,7 @@ class FoodProject(UUIDModel):
     description = models.TextField()
     logo_image = models.ImageField()
     address = models.CharField(max_length=240)
+    linkTo2Gis = models.URLField()
     primary_app_color = ColorField(default='#FF0000')
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, editable=False)
