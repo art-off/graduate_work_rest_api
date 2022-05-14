@@ -16,6 +16,7 @@ class MenuOptionSerializer(serializers.ModelSerializer):
 
 class MenuItemSerializer(serializers.ModelSerializer):
     allowed_options = MenuOptionSerializer(many=True)
+    type = serializers.CharField(source='type.name')
 
     class Meta:
         model = MenuItem

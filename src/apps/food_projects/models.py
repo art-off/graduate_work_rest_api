@@ -9,7 +9,7 @@ class FoodProject(UUIDModel):
     description = models.TextField()
     logo_image = models.ImageField()
     address = models.CharField(max_length=240)
-    linkTo2Gis = models.URLField()
+    link_to_2gis = models.URLField()
     primary_app_color = ColorField(default='#FF0000')
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, editable=False)
@@ -28,6 +28,15 @@ class MenuOption(UUIDModel):
         return f'{self.name} - {self.price}'
 
 
+class MenuItemType(UUIDModel):
+    name = models.CharField(max_length=30)
+
+    project = models.ForeignKey(FoodProject, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class MenuItem(UUIDModel):
     name = models.CharField(max_length=120)
     description = models.TextField()
@@ -36,6 +45,7 @@ class MenuItem(UUIDModel):
 
     allowed_options = models.ManyToManyField(MenuOption, blank=True)
 
+    type = models.ForeignKey(MenuItemType, on_delete=models.SET_NULL, null=True, default=None)
     project = models.ForeignKey(FoodProject, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from helpers.mixins import QuerySetByCurrentUserProjectsMixin
 from utils.admin_form_helpers import prepare_project_field, prepare_menu_items_field, prepare_menu_options_field
-from .models import FoodProject, MenuItem, PromotionItem, MenuOption
+from .models import FoodProject, MenuItem, PromotionItem, MenuOption, MenuItemType
 
 
 @admin.register(FoodProject)
@@ -19,6 +19,15 @@ class AdminFoodProject(admin.ModelAdmin):
         if request.user.is_superuser:
             return queryset
         return queryset.filter(owner=request.user)
+
+
+@admin.register(MenuItemType)
+class AdminMenuItemType(QuerySetByCurrentUserProjectsMixin, admin.ModelAdmin):
+    list_display = ('name',)
+
+    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+        prepare_project_field(context, request, obj)
+        return super().render_change_form(request, context, add, change, form_url, obj)
 
 
 @admin.register(MenuOption)
