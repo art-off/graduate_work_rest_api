@@ -1,12 +1,25 @@
 from django.contrib import admin
+from django import forms
 
 from helpers.mixins import QuerySetByCurrentUserProjectsMixin
 from utils.admin_form_helpers import prepare_project_field, prepare_menu_items_field, prepare_menu_options_field
 from .models import FoodProject, MenuItem, PromotionItem, MenuOption, MenuItemType
 
 
+# The form class
+class TestAdminForm(forms.ModelForm):
+    class Meta:
+        model = FoodProject
+        widgets = {
+            'appstore_api_key': forms.PasswordInput,
+            'playmarket_api_key': forms.PasswordInput,
+        }
+        fields = '__all__'
+
+
 @admin.register(FoodProject)
 class AdminFoodProject(admin.ModelAdmin):
+    form = TestAdminForm
     list_display = ('name', 'owner')
 
     def save_model(self, request, obj, form, change):

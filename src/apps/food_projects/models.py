@@ -5,12 +5,24 @@ from colorfield.fields import ColorField
 
 
 class FoodProject(UUIDModel):
+    # base fields
     name = models.CharField(max_length=120)
     description = models.TextField()
     logo_image = models.ImageField()
+
+    # address
     address = models.CharField(max_length=240)
     link_to_2gis = models.URLField()
+
+    # style fields
     primary_app_color = ColorField(default='#FF0000')
+
+    # app build fields
+    appstore_api_key = models.CharField(max_length=120)
+    playmarket_api_key = models.CharField(max_length=120)
+    app_icon_asset = models.FileField(help_text='''
+    Загрузите иконки, сгенерированные с помощью https://google.com. Также необходимо сжать в формат .zip.
+    ''')
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, editable=False)
 
