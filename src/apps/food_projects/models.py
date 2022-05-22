@@ -21,7 +21,7 @@ class FoodProject(UUIDModel):
     appstore_api_key = models.CharField(max_length=120)
     playmarket_api_key = models.CharField(max_length=120)
     app_icon_asset = models.FileField(help_text='''
-    Загрузите иконки, сгенерированные с помощью https://google.com. Также необходимо сжать в формат .zip.
+    Загрузите иконки, сгенерированные с помощью https://makeappicon.com/. Также необходимо сжать в формат .zip.
     ''')
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, editable=False)
